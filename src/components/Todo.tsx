@@ -99,6 +99,7 @@ const TodoList: React.FC = () => {
           {tasks.map((task) => (
             <ListItem key={task.id} disableGutters>
               <Checkbox
+                style={{ margin: ".5rem" }}
                 checked={task.completed}
                 onChange={() =>
                   setTasks((prevTasks) =>
@@ -147,7 +148,8 @@ const TodoList: React.FC = () => {
           onClose={handleCancelEdit}
           PaperProps={{
             style: {
-              width: "100%"
+              width: "100%",
+              padding: "1rem"
             },
           }}
         >
