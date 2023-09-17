@@ -33,6 +33,7 @@ import AddIcon from "@material-ui/icons/Add";
 import useStyles from "./Style";
 import { RootState } from "../../store/store";
 
+
 const TodoList: React.FC = () => {
   const tasks = useSelector((state: RootState) => state.todo);
   const dispatch = useDispatch();
@@ -111,10 +112,16 @@ const TodoList: React.FC = () => {
                 }
               />
               <ListItemSecondaryAction>
-                <IconButton onClick={() => handleEditClick(task)}>
+                <IconButton
+                  onClick={() => handleEditClick(task)}
+                  aria-label="edit text"
+                >
                   <EditIcon color="primary" />
                 </IconButton>
-                <IconButton onClick={() => handleDelete(task.id)}>
+                <IconButton
+                  onClick={() => handleDelete(task.id)}
+                  aria-label="delete text"
+                >
                   <DeleteIcon color="error" />
                 </IconButton>
               </ListItemSecondaryAction>
@@ -127,6 +134,7 @@ const TodoList: React.FC = () => {
           color="primary"
           onClick={handleAddClick}
           startIcon={<AddIcon />}
+          aria-label="add button"
         >
           Add new Todo
         </Button>
@@ -153,10 +161,18 @@ const TodoList: React.FC = () => {
             />
           </DialogContent>
           <DialogActions style={{ padding: "1rem 2rem" }}>
-            <Button onClick={handleCancelEdit} color="primary">
+            <Button
+              onClick={handleCancelEdit}
+              color="primary"
+              aria-label="calcel text"
+            >
               <CancelIcon /> Cancel
             </Button>
-            <Button onClick={handleSaveEdit} color="secondary">
+            <Button
+              onClick={handleSaveEdit}
+              color="secondary"
+              aria-label="save text"
+            >
               <SaveIcon /> Save
             </Button>
           </DialogActions>
@@ -185,13 +201,22 @@ const TodoList: React.FC = () => {
               checked={newTaskCompleted}
               onChange={() => setNewTaskCompleted(!newTaskCompleted)}
               color="primary"
+              name="checkbox"
             />
           </DialogContent>
           <DialogActions style={{ padding: "1rem 2rem" }}>
-            <Button onClick={() => setOpenAddDialog(false)} color="primary">
+            <Button
+              onClick={() => setOpenAddDialog(false)}
+              color="primary"
+              aria-label="calcel modal"
+            >
               <CancelIcon /> Cancel
             </Button>
-            <Button onClick={handleAddTask} color="secondary">
+            <Button
+              onClick={handleAddTask}
+              color="secondary"
+              aria-label="add todo"
+            >
               <SaveIcon /> Save
             </Button>
           </DialogActions>
