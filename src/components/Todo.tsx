@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Button,
@@ -15,33 +16,32 @@ import {
   Checkbox,
   ListItemSecondaryAction,
 } from "@material-ui/core";
+
+import {
+  addTask,
+  updateTask,
+  toggleTaskCompletion,
+  deleteTask,
+} from "../store/slice/todo.slice";
+import { Task } from "../store/slice/todo.slice";
+
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import SaveIcon from "@material-ui/icons/Save";
 import CancelIcon from "@material-ui/icons/Cancel";
 import AddIcon from "@material-ui/icons/Add";
 import useStyles from "./Style";
-
-interface Task {
-  id: number;
-  text: string;
-  completed: boolean;
-}
-
-const initialTasks: Task[] = [
-  { id: 1, text: "Create new React app", completed: true },
-  { id: 2, text: "Create Todo List", completed: true },
-  { id: 3, text: "Design Todo List", completed: true },
-];
+import { RootState } from "../store/store";
 
 const TodoList: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const tasks = useSelector((state: RootState) => state.todo);
+  const dispatch = useDispatch();
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editTask, setEditTask] = useState<Task | null>(null);
-  const [editedText, setEditedText] = useState("");
+  const [editedText, setEditedText] = useState<string>("");
   const [openAddDialog, setOpenAddDialog] = useState(false);
-  const [newTaskText, setNewTaskText] = useState("");
-  const [newTaskCompleted, setNewTaskCompleted] = useState(false);
+  const [newTaskText, setNewTaskText] = useState<string>("");
+  const [newTaskCompleted, setNewTaskCompleted] = useState<boolean>(false);
   const classes = useStyles();
 
   const handleEditClick = (task: Task) => {
@@ -52,11 +52,7 @@ const TodoList: React.FC = () => {
 
   const handleSaveEdit = () => {
     if (editTask) {
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task.id === editTask.id ? { ...task, text: editedText } : task
-        )
-      );
+      dispatch(updateTask({ id: editTask.id, text: editedText }));
     }
     setOpenEditDialog(false);
   };
@@ -67,7 +63,7 @@ const TodoList: React.FC = () => {
   };
 
   const handleDelete = (id: number) => {
-    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+    dispatch(deleteTask(id));
   };
 
   const handleAddClick = () => {
@@ -82,7 +78,7 @@ const TodoList: React.FC = () => {
         completed: newTaskCompleted,
       };
 
-      setTasks((prevTasks) => [...prevTasks, newTask]);
+      dispatch(addTask(newTask));
       setNewTaskText("");
       setNewTaskCompleted(false);
       setOpenAddDialog(false);
@@ -96,20 +92,12 @@ const TodoList: React.FC = () => {
       </Typography>
       <div className={classes.container}>
         <List className={classes.listItem}>
-          {tasks.map((task) => (
+          {tasks.map((task: Task) => (
             <ListItem key={task.id} disableGutters>
               <Checkbox
                 style={{ margin: ".5rem" }}
                 checked={task.completed}
-                onChange={() =>
-                  setTasks((prevTasks) =>
-                    prevTasks.map((prevTask) =>
-                      prevTask.id === task.id
-                        ? { ...prevTask, completed: !task.completed }
-                        : prevTask
-                    )
-                  )
-                }
+                onChange={() => dispatch(toggleTaskCompletion(task.id))}
               />
               <ListItemText
                 primary={
@@ -143,13 +131,13 @@ const TodoList: React.FC = () => {
           Add new Todo
         </Button>
 
-        <Dialog 
-          open={openEditDialog} 
+        <Dialog
+          open={openEditDialog}
           onClose={handleCancelEdit}
           PaperProps={{
             style: {
               width: "100%",
-              padding: "1rem"
+              padding: "1rem",
             },
           }}
         >
@@ -174,12 +162,12 @@ const TodoList: React.FC = () => {
           </DialogActions>
         </Dialog>
 
-        <Dialog 
-          open={openAddDialog} 
+        <Dialog
+          open={openAddDialog}
           onClose={() => setOpenAddDialog(false)}
           PaperProps={{
             style: {
-              width: "100%"
+              width: "100%",
             },
           }}
         >
