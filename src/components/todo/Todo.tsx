@@ -22,8 +22,8 @@ import {
   updateTask,
   toggleTaskCompletion,
   deleteTask,
-} from "../store/slice/todo.slice";
-import { Task } from "../store/slice/todo.slice";
+} from "../../store/slice/todo.slice";
+import { Task } from "../../store/slice/todo.slice";
 
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -31,7 +31,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import CancelIcon from "@material-ui/icons/Cancel";
 import AddIcon from "@material-ui/icons/Add";
 import useStyles from "./Style";
-import { RootState } from "../store/store";
+import { RootState } from "../../store/store";
 
 const TodoList: React.FC = () => {
   const tasks = useSelector((state: RootState) => state.todo);
