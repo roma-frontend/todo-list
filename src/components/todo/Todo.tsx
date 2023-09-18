@@ -7,6 +7,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  DialogContentText,
   TextField,
   IconButton,
   Typography,
@@ -33,7 +34,6 @@ import AddIcon from "@material-ui/icons/Add";
 import useStyles from "./Style";
 import { RootState } from "../../store/store";
 
-
 const TodoList: React.FC = () => {
   const tasks = useSelector((state: RootState) => state.todo);
   const dispatch = useDispatch();
@@ -42,6 +42,8 @@ const TodoList: React.FC = () => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editTask, setEditTask] = useState<Task | null>(null);
   const [editedText, setEditedText] = useState<string>("");
+
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
 
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [newTaskText, setNewTaskText] = useState<string>("");
@@ -58,14 +60,19 @@ const TodoList: React.FC = () => {
   const handleCancelEdit = useCallback(() => {
     setEditedText("");
     setOpenEditDialog(false);
+    setDeleteConfirmationOpen(false);
   }, []);
 
-  const handleDelete = useCallback(
-    (id: number) => {
-      dispatch(deleteTask(id));
-    },
-    [dispatch]
-  );
+  const handleDelete = useCallback((id: number) => {
+    setDeleteConfirmationOpen(true);
+  }, []);
+
+  const handleConfirmDelete = useCallback(() => {
+    if (editTask) {
+      dispatch(deleteTask(editTask.id));
+      setDeleteConfirmationOpen(false);
+    }
+  }, [dispatch, editTask]);
 
   const handleAddClick = useCallback(() => {
     setOpenAddDialog(true);
@@ -239,6 +246,34 @@ const TodoList: React.FC = () => {
               aria-label="add todo"
             >
               <SaveIcon /> Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={deleteConfirmationOpen}
+          onClose={() => setDeleteConfirmationOpen(false)}
+          PaperProps={{
+            style: {
+              width: "100%",
+              padding: "1rem",
+            },
+          }}
+        >
+          <DialogTitle>Confirm Delete</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete this task?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => setDeleteConfirmationOpen(false)}
+              color="primary"
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmDelete} color="secondary">
+              Confirm Delete
             </Button>
           </DialogActions>
         </Dialog>

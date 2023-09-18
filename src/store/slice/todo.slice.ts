@@ -19,7 +19,10 @@ const todoSlice = createSlice({
     addTask: (state, action: PayloadAction<Task>) => {
       state.push(action.payload);
     },
-    updateTask: (state, action: PayloadAction<{ id: number; text: string }>) => {
+    updateTask: (
+      state,
+      action: PayloadAction<{ id: number; text: string }>
+    ) => {
       const task = state.find((todo) => todo.id === action.payload.id);
       if (task) {
         task.text = action.payload.text;

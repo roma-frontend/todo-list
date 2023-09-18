@@ -1,9 +1,8 @@
 import { makeStyles } from "@material-ui/core";
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
-    fontFamily: 'Poppins, sans-serif',
+    fontFamily: "Poppins, sans-serif",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -19,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     color: "#D18D8D",
     WebkitTextStroke: "1px transparnet",
     WebkitBackgroundClip: "text",
-    textShadow: "0px 0px 10px #AD7563"
+    textShadow: "0px 0px 10px #AD7563",
   },
 
   container: {
@@ -42,9 +41,9 @@ const useStyles = makeStyles((theme) => ({
   },
 
   listItem: {
-    width: "100%"
+    width: "100%",
   },
-  
+
   list: {
     width: "100%",
     padding: "1rem",
@@ -55,8 +54,8 @@ const useStyles = makeStyles((theme) => ({
   },
 
   addButton: {
-    textTransform: "capitalize"
-  }
+    textTransform: "uppercase",
+  },
 }));
 
 export default useStyles;
