@@ -18,6 +18,8 @@ import {
   ListItemSecondaryAction,
 } from "@material-ui/core";
 
+import { Toaster, toast } from "react-hot-toast";
+
 import {
   addTask,
   updateTask,
@@ -70,6 +72,9 @@ const TodoList: React.FC = () => {
     if (confirmDeleteTask) {
       dispatch(deleteTask(confirmDeleteTask.id));
       setConfirmDeleteTask(null);
+      toast.success(`"${confirmDeleteTask.text}" task is deleted!`, {
+        className: "toast",
+      });
     }
   }, [dispatch, confirmDeleteTask]);
 
@@ -249,7 +254,7 @@ const TodoList: React.FC = () => {
           </DialogActions>
         </Dialog>
         <Dialog
-          open={!!confirmDeleteTask} // Открывается только при наличии задачи для удаления
+          open={!!confirmDeleteTask}
           onClose={() => setConfirmDeleteTask(null)}
           PaperProps={{
             style: {
@@ -260,7 +265,11 @@ const TodoList: React.FC = () => {
           <DialogTitle>Confirm Delete</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Are you sure you want to delete this task?
+              Are you sure you want to delete{" "}
+              <span style={{ fontWeight: "bold", color: "#f44336" }}>
+                {confirmDeleteTask?.text}
+              </span>
+              ?
             </DialogContentText>
           </DialogContent>
           <DialogActions style={{ padding: "1rem 2rem" }}>
@@ -281,6 +290,7 @@ const TodoList: React.FC = () => {
           </DialogActions>
         </Dialog>
       </div>
+      <Toaster />
     </Box>
   );
 };
