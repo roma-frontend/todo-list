@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
@@ -33,45 +33,44 @@ import AddIcon from "@material-ui/icons/Add";
 import useStyles from "./Style";
 import { RootState } from "../../store/store";
 
-
 const TodoList: React.FC = () => {
   const tasks = useSelector((state: RootState) => state.todo);
   const dispatch = useDispatch();
+  const classes = useStyles();
+
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editTask, setEditTask] = useState<Task | null>(null);
   const [editedText, setEditedText] = useState<string>("");
+
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [newTaskText, setNewTaskText] = useState<string>("");
   const [newTaskCompleted, setNewTaskCompleted] = useState<boolean>(false);
-  const classes = useStyles();
 
-  const handleEditClick = (task: Task) => {
+  const selectTasks = useMemo(() => tasks, [tasks]);
+
+  const handleEditClick = useCallback((task: Task) => {
     setEditTask(task);
     setEditedText(task.text);
     setOpenEditDialog(true);
-  };
+  }, []);
 
-  const handleSaveEdit = () => {
-    if (editTask) {
-      dispatch(updateTask({ id: editTask.id, text: editedText }));
-    }
-    setOpenEditDialog(false);
-  };
-
-  const handleCancelEdit = () => {
+  const handleCancelEdit = useCallback(() => {
     setEditedText("");
     setOpenEditDialog(false);
-  };
+  }, []);
 
-  const handleDelete = (id: number) => {
-    dispatch(deleteTask(id));
-  };
+  const handleDelete = useCallback(
+    (id: number) => {
+      dispatch(deleteTask(id));
+    },
+    [dispatch]
+  );
 
-  const handleAddClick = () => {
+  const handleAddClick = useCallback(() => {
     setOpenAddDialog(true);
-  };
+  }, []);
 
-  const handleAddTask = () => {
+  const handleAddTask = useCallback(() => {
     if (newTaskText.trim() !== "") {
       const newTask: Task = {
         id: tasks.length + 1,
@@ -84,7 +83,14 @@ const TodoList: React.FC = () => {
       setNewTaskCompleted(false);
       setOpenAddDialog(false);
     }
-  };
+  }, [dispatch, tasks, newTaskText, newTaskCompleted]);
+
+  const handleSaveEdit = useCallback(() => {
+    if (editTask) {
+      dispatch(updateTask({ id: editTask.id, text: editedText }));
+    }
+    setOpenEditDialog(false);
+  }, [dispatch, editTask, editedText]);
 
   return (
     <Box className={classes.root}>
@@ -93,24 +99,34 @@ const TodoList: React.FC = () => {
       </Typography>
       <div className={classes.container}>
         <List className={classes.listItem}>
-          {tasks.map((task: Task) => (
+          {selectTasks.map((task: Task) => (
             <ListItem key={task.id} disableGutters>
-              <Checkbox
-                style={{ margin: ".5rem" }}
-                checked={task.completed}
-                onChange={() => dispatch(toggleTaskCompletion(task.id))}
-              />
-              <ListItemText
-                primary={
-                  <span
-                    style={{
-                      textDecoration: task.completed ? "line-through" : "none",
-                    }}
-                  >
-                    {task.text}
-                  </span>
-                }
-              />
+              <label
+                htmlFor={`task-${task.id}`}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <Checkbox
+                  style={{ margin: ".5rem" }}
+                  checked={task.completed}
+                  onChange={() => dispatch(toggleTaskCompletion(task.id))}
+                  id={`task-${task.id}`}
+                  name={`task-${task.id}`}
+                />
+                <ListItemText
+                  primary={
+                    <span
+                      style={{
+                        textDecoration: task.completed
+                          ? "line-through"
+                          : "none",
+                      }}
+                    >
+                      {task.text}
+                    </span>
+                  }
+                />
+              </label>
+
               <ListItemSecondaryAction>
                 <IconButton
                   onClick={() => handleEditClick(task)}
@@ -197,12 +213,15 @@ const TodoList: React.FC = () => {
               value={newTaskText}
               onChange={(e) => setNewTaskText(e.target.value)}
             />
-            <Checkbox
-              checked={newTaskCompleted}
-              onChange={() => setNewTaskCompleted(!newTaskCompleted)}
-              color="primary"
-              name="checkbox"
-            />
+            <label htmlFor="checkbox">
+              <Checkbox
+                checked={newTaskCompleted}
+                onChange={() => setNewTaskCompleted(!newTaskCompleted)}
+                color="primary"
+                name="checkbox"
+                id="checkbox"
+              />
+            </label>
           </DialogContent>
           <DialogActions style={{ padding: "1rem 2rem" }}>
             <Button
