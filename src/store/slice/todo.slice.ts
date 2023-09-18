@@ -9,7 +9,7 @@ export interface Task {
 const initialState: Task[] = [
   { id: 1, text: "Create new React app", completed: true },
   { id: 2, text: "Create Todo List", completed: true },
-  { id: 3, text: "Design Todo List", completed: true },
+  { id: 3, text: "Design Todo List", completed: false },
 ];
 
 const todoSlice = createSlice({

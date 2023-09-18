@@ -14,8 +14,12 @@ const useStyles = makeStyles((theme) => ({
   },
 
   mainTitle: {
-    fontSize: "3rem",
-    marginBottom: "2.4rem"
+    fontSize: "4.5rem",
+    marginBottom: "2.4rem",
+    color: "#D18D8D",
+    WebkitTextStroke: "1px transparnet",
+    WebkitBackgroundClip: "text",
+    textShadow: "0px 0px 10px #AD7563"
   },
 
   container: {
@@ -49,6 +53,10 @@ const useStyles = makeStyles((theme) => ({
   todoTitle: {
     fontSize: "1.875rem",
   },
+
+  addButton: {
+    textTransform: "capitalize"
+  }
 }));
 
 export default useStyles;

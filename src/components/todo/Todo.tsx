@@ -33,6 +33,7 @@ import AddIcon from "@material-ui/icons/Add";
 import useStyles from "./Style";
 import { RootState } from "../../store/store";
 
+
 const TodoList: React.FC = () => {
   const tasks = useSelector((state: RootState) => state.todo);
   const dispatch = useDispatch();
@@ -146,11 +147,12 @@ const TodoList: React.FC = () => {
         </List>
 
         <Button
-          variant="contained"
+          variant="outlined"
           color="primary"
           onClick={handleAddClick}
           startIcon={<AddIcon />}
           aria-label="add button"
+          className={classes.addButton}
         >
           Add new Todo
         </Button>
@@ -227,7 +229,7 @@ const TodoList: React.FC = () => {
             <Button
               onClick={() => setOpenAddDialog(false)}
               color="primary"
-              aria-label="calcel modal"
+              aria-label="cancel modal"
             >
               <CancelIcon /> Cancel
             </Button>
