@@ -43,7 +43,7 @@ const TodoList: React.FC = () => {
   const [editTask, setEditTask] = useState<Task | null>(null);
   const [editedText, setEditedText] = useState<string>("");
 
-  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [confirmDeleteTask, setConfirmDeleteTask] = useState<Task | null>(null);
 
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [newTaskText, setNewTaskText] = useState<string>("");
@@ -60,19 +60,18 @@ const TodoList: React.FC = () => {
   const handleCancelEdit = useCallback(() => {
     setEditedText("");
     setOpenEditDialog(false);
-    setDeleteConfirmationOpen(false);
   }, []);
 
-  const handleDelete = useCallback((id: number) => {
-    setDeleteConfirmationOpen(true);
+  const handleDelete = useCallback((task: Task) => {
+    setConfirmDeleteTask(task);
   }, []);
 
   const handleConfirmDelete = useCallback(() => {
-    if (editTask) {
-      dispatch(deleteTask(editTask.id));
-      setDeleteConfirmationOpen(false);
+    if (confirmDeleteTask) {
+      dispatch(deleteTask(confirmDeleteTask.id));
+      setConfirmDeleteTask(null);
     }
-  }, [dispatch, editTask]);
+  }, [dispatch, confirmDeleteTask]);
 
   const handleAddClick = useCallback(() => {
     setOpenAddDialog(true);
@@ -143,7 +142,7 @@ const TodoList: React.FC = () => {
                   <EditIcon color="primary" />
                 </IconButton>
                 <IconButton
-                  onClick={() => handleDelete(task.id)}
+                  onClick={() => handleDelete(task)}
                   aria-label="delete text"
                 >
                   <DeleteIcon color="error" />
@@ -250,12 +249,11 @@ const TodoList: React.FC = () => {
           </DialogActions>
         </Dialog>
         <Dialog
-          open={deleteConfirmationOpen}
-          onClose={() => setDeleteConfirmationOpen(false)}
+          open={!!confirmDeleteTask} // Открывается только при наличии задачи для удаления
+          onClose={() => setConfirmDeleteTask(null)}
           PaperProps={{
             style: {
               width: "100%",
-              padding: "1rem",
             },
           }}
         >
@@ -265,15 +263,20 @@ const TodoList: React.FC = () => {
               Are you sure you want to delete this task?
             </DialogContentText>
           </DialogContent>
-          <DialogActions>
+          <DialogActions style={{ padding: "1rem 2rem" }}>
             <Button
-              onClick={() => setDeleteConfirmationOpen(false)}
+              onClick={() => setConfirmDeleteTask(null)}
               color="primary"
+              aria-label="cancel delete"
             >
-              Cancel
+              <CancelIcon /> Cancel
             </Button>
-            <Button onClick={handleConfirmDelete} color="secondary">
-              Confirm Delete
+            <Button
+              onClick={handleConfirmDelete}
+              color="secondary"
+              aria-label="confirm delete"
+            >
+              <DeleteIcon /> Confirm
             </Button>
           </DialogActions>
         </Dialog>
